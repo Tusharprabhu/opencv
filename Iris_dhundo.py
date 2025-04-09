@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import sys
 
-def detect_iris(image_path='ab.jpg'):
+def detect_iris(image_path='cat.jpg'):
     # Read image from the given path
     img = cv2.imread(image_path)
     if img is None:
