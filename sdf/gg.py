@@ -235,7 +235,7 @@ def detect_iris_in_eye(image_path, debug=True):
         return None
 
 if __name__ == "__main__":
-    image_path = "D:/ML/opencv/asd.jpg"
+    image_path = "D:/ML/opencv/imge.jpg"
     print(f"Attempting to process image at: {image_path}")
     results = detect_iris_in_eye(image_path)
     
