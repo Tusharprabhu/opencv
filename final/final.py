@@ -27,24 +27,24 @@ for (x, y, w, h) in eyes:
     # Original eye region in grayscale
     plt.subplot(3, 3, 1)
     plt.title("Grayscale Eye Region")
-    plt.imshow(eye_roi, cmap='gray')
+    plt.imshow(cv2.cvtColor(eye_color_roi, cv2.COLOR_BGR2RGB))
     plt.axis('off')
 
     # Original eye region in color
     plt.subplot(3, 3, 2)
     plt.title("Color Eye Region")
-    plt.imshow(cv2.cvtColor(eye_color_roi, cv2.COLOR_BGR2RGB))
+    plt.imshow(eye_roi, cmap='gray')
     plt.axis('off')
 
     # Preprocess the eye ROI
-    eye_blurred = eye_roi.copy()
+    eye_blurred = cv2.GaussianBlur(eye_roi, (15, 15), 0)
     plt.subplot(3, 3, 3)
     plt.title("Blurred Eye Region")
     plt.imshow(eye_blurred, cmap='gray')
     plt.axis('off')
 
     # Get threshold black and white for blurred eye region
-    _, eye_thresh = cv2.threshold(eye_blurred, 30, 255, cv2.THRESH_BINARY_INV)
+    _, eye_thresh = cv2.threshold(eye_blurred, 150, 255, cv2.THRESH_BINARY)
     plt.subplot(3, 3, 4)
     plt.title("Thresholded Eye Region")
     plt.imshow(eye_thresh, cmap='gray')
@@ -77,7 +77,6 @@ for (x, y, w, h) in eyes:
     plt.title("Detected Circles")
     plt.imshow(cv2.cvtColor(eye_color_roi, cv2.COLOR_BGR2RGB))
     plt.axis('off')
-
     plt.tight_layout()
     plt.show()
 
