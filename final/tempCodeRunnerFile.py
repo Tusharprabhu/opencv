@@ -1,1 +1,2 @@
-    _, eye_thresh = cv2.threshold(eye_blurred, 150, 255, cv2.THRESH_BINARY)
+
+        iris_circles = np.uint16(np.around(iris_circles))
