@@ -84,7 +84,7 @@ def detect_iris_in_eye(image_path, debug=True):
             print(f"Average eye intensity: {avg_intensity:.1f}")
         
         # Adjust threshold based on average intensity
-        base_threshold = max(30, min(90, avg_intensity * 0.8))
+        base_threshold = max(30, min(90, 100 - avg_intensity))
         
         # Try multiple threshold values around the base threshold
         threshold_values = [base_threshold - 20, base_threshold, base_threshold + 20]
@@ -220,7 +220,7 @@ def detect_iris_in_eye(image_path, debug=True):
         plt.title("All Detected Eyes and Irises")
         plt.axis('off')
         plt.tight_layout()
-        plt.show()
+        # plt.show()
         
         print(f"Found {len(all_results)} potential iris detections")
         print(f"Best detection score: {best_result[1]:.1f}")
@@ -230,7 +230,7 @@ def detect_iris_in_eye(image_path, debug=True):
         return None
 
 if __name__ == "__main__":
-    image_path = "D:/ML/opencv/imge.jpg"
+    image_path = "D:\ML\opencv\lkj.jpg"
     print(f"Attempting to process image at: {image_path}")
     results = detect_iris_in_eye(image_path)
     

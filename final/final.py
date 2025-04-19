@@ -2,47 +2,86 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Step 1: Load the input image using OpenCV
-image_path = "D:/ML/opencv/ewtrt.jpg"  # Use forward slashes or raw string
+# Step 1: Load the image
+image_path = 'D:\ML\opencv\lkj.jpg'  # Change this to your image path
 img = cv2.imread(image_path)
-
-# Check if the image was loaded successfully
-if img is None:
-    print(f"Error: Could not load image at '{image_path}'.")
-    exit(1)
-
-# Step 2: Convert the image to grayscale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))#CLAHE (Contrast Limited Adaptive Histogram Equalization)
-gray_eq = clahe.apply(gray)
-
-# Step 5: Use the Haar Cascade classifier to detect eyes
+# Step 2: Load Haar Cascade for eye detection
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
-eyes = eye_cascade.detectMultiScale(gray_eq, scaleFactor=1.1, minNeighbors=5, minSize=(20, 20))
 
-# If at least one eye is detected, extract the first one
-if len(eyes) > 0:
-    (ex, ey, ew, eh) = eyes[0]
-    eye_region_color = img[ey:ey + eh, ex:ex + ew]
-else:
-    print("No eyes detected.")
-    exit(1)
+# Step 3: Detect eyes in the grayscale image
+eyes = eye_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
-# Convert images from BGR (OpenCV) to RGB (matplotlib)
-eye_region_rgb = cv2.cvtColor(eye_region_color, cv2.COLOR_BGR2RGB)
-img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# Step 4: For each detected eye
+for (x, y, w, h) in eyes:
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-plt.figure(figsize=(10, 5))
-plt.subplot(1, 2, 1)
-plt.imshow(img_rgb)
-plt.title("Original Image")
-plt.axis('off')
+    # Crop the eye region from the grayscale image
+    eye_roi = gray[y:y + h, x:x + w]
+    eye_color_roi = img[y:y + h, x:x + w]
 
-plt.subplot(1, 2, 2)
-plt.imshow(eye_region_rgb)
-plt.title("Detected Eye Region")
-plt.axis('off')
+    # Create a figure for subplots
+    plt.figure(figsize=(15, 15))
 
-plt.tight_layout()
-plt.show()
+    # Original eye region in grayscale
+    plt.subplot(3, 3, 1)
+    plt.title("Grayscale Eye Region")
+    plt.imshow(eye_roi, cmap='gray')
+    plt.axis('off')
+
+    # Original eye region in color
+    plt.subplot(3, 3, 2)
+    plt.title("Color Eye Region")
+    plt.imshow(cv2.cvtColor(eye_color_roi, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+
+    # Preprocess the eye ROI
+    eye_blurred = eye_roi.copy()
+    plt.subplot(3, 3, 3)
+    plt.title("Blurred Eye Region")
+    plt.imshow(eye_blurred, cmap='gray')
+    plt.axis('off')
+
+    # Get threshold black and white for blurred eye region
+    _, eye_thresh = cv2.threshold(eye_blurred, 30, 255, cv2.THRESH_BINARY_INV)
+    plt.subplot(3, 3, 4)
+    plt.title("Thresholded Eye Region")
+    plt.imshow(eye_thresh, cmap='gray')
+    plt.axis('off')
+
+    # Detect circles (iris) using HoughCircles
+    circles = cv2.HoughCircles(
+        eye_blurred, cv2.HOUGH_GRADIENT, dp=1, minDist=20,
+        param1=100, param2=20, minRadius=5, maxRadius=40
+    )
+
+    # Show circles on the thresholded image
+    eye_thresh_circles = cv2.HoughCircles(
+        eye_thresh, cv2.HOUGH_GRADIENT, dp=1, minDist=20,
+        param1=100, param2=20, minRadius=5, maxRadius=40
+    )
+    plt.subplot(3, 3, 5)
+    plt.title("Circles on Thresholded Image")
+    plt.imshow(eye_thresh, cmap='gray')
+    plt.axis('off')
+
+    # If any circles are found, draw the first one
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        for (cx, cy, r) in circles[0, :1]:  # Take only the first circle
+            cv2.circle(eye_color_roi, (cx, cy), r, (255, 0, 0), 2)
+
+    # Show the detected circles on the color eye region
+    plt.subplot(3, 3, 6)
+    plt.title("Detected Circles")
+    plt.imshow(cv2.cvtColor(eye_color_roi, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+# Step 5: Show the final image
+cv2.imshow("Eye and Iris Detection", img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
