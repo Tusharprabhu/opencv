@@ -212,7 +212,6 @@ def detect_iris_in_eye(image_path, debug=True):
             plt.axis('off')
         
         plt.tight_layout()
-        plt.savefig('iris_processing_steps.jpg')
         plt.show()
         
         # Show full image with all detected eyes and irises
@@ -221,11 +220,7 @@ def detect_iris_in_eye(image_path, debug=True):
         plt.title("All Detected Eyes and Irises")
         plt.axis('off')
         plt.tight_layout()
-        plt.savefig('all_detections.jpg')
         plt.show()
-        
-        # Save the output image with detections
-        cv2.imwrite('output_iris_detection.jpg', vis_img)
         
         print(f"Found {len(all_results)} potential iris detections")
         print(f"Best detection score: {best_result[1]:.1f}")
@@ -240,9 +235,6 @@ if __name__ == "__main__":
     results = detect_iris_in_eye(image_path)
     
     if results:
-        image_names = ["eye", "enhanced", "threshold", "mask", "iris", "result"]
-        for i, img in enumerate(results):
-            cv2.imwrite(f"{image_names[i]}.jpg", img)
-        print("Iris detection complete. Images saved.")
+        print("Iris detection complete.")
     else:
         print("Failed to detect iris.")
