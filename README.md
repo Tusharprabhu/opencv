@@ -1,13 +1,5 @@
 # OpenCV Computer Vision Toolkit
 
-## What is it?
-This repository showcases a curated set of computer vision applications and experiments built with OpenCV in Python. It is designed as a hands-on demonstration of key image processing and vision algorithms.
-
-## Why Computer Vision?
-- The world is rich with visual data waiting to be interpreted.
-- Automating visual tasks unlocks new capabilities in robotics, healthcare, and analytics.
-- From autonomous driving to augmented reality, vision drives innovation across industries.
-
 ## Core Concepts
 - **Image Processing**: Filtering, transformations, and feature extraction.  
 - **Object Detection**: Identifying and localizing objects in images and video.  
@@ -49,6 +41,3 @@ Browse the `examples/` directory to explore individual scripts and notebooks tha
 
 ## Contributing
 Contributions are welcome! Share your optimizations, new demos, and improvements to existing modules.
-
-## License
-Distributed under the MIT License.  
